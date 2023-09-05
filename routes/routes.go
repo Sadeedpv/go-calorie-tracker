@@ -12,8 +12,8 @@ func SetUpRoutes(r *gin.Engine){
 		routeGroup.POST("/calories", controllers.AddCalories)  // done
 		routeGroup.DELETE("/calories", controllers.DeleteCalories) // done
 		routeGroup.GET("/calories/:id", controllers.GetCaloriesById) // done
-		routeGroup.DELETE("/calories/:id", controllers.DeleteCaloriesById) // done
 		routeGroup.PUT("/calories/:id", controllers.UpdateCalories) // done
 		routeGroup.GET("/totalcalories", controllers.GetTotalCalories) // done
+		routeGroup.DELETE("/calories/:id", controllers.DeleteCaloriesById) // done
 	}
 }

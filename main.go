@@ -23,7 +23,12 @@ func main(){
 	}
 
 	router := gin.Default()
+
+	// Configuration
 	router.Use(cors.Default())
+	router.Use(gin.Logger())
+	router.Use(gin.Recovery())
+
 	router.ForwardedByClientIP = true
 	router.SetTrustedProxies([]string{os.Getenv("PROXY")})
 	routes.SetUpRoutes(router)
