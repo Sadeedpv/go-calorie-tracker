@@ -52,7 +52,7 @@ go run main.go
 The API provides the following endpoints:
 
 - `/v1/calories`: Get all calories
-- `/v1/calories`: Add a calorie
+- `/v1/calories`: Add a calorie to the DB
 - `/v1/calories/:id`: Get a calorie by ID
 - `/v1/calories/:id`: Update a calorie by ID
 - `/v1/calories/:id`: Delete a calorie by ID
