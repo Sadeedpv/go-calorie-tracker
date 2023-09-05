@@ -1,7 +1,8 @@
 package models
 
 type Calories struct{
-	ID int `json:"id"`
+	// Add pointer to make it optional data
+	ID *int `json:"id"`
 	Food string `json:"food"`
 	Calorie int `json:"calorie"`
 }
