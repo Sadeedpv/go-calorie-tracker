@@ -7,8 +7,8 @@ import (
 	"github.com/Sadeedpv/go-calorie-tracker/routes"
 	"github.com/Sadeedpv/go-calorie-tracker/utils"
 	"github.com/gin-gonic/gin"
-
 	"github.com/joho/godotenv"
+	"github.com/gin-contrib/cors"
 )
 
 
@@ -23,6 +23,9 @@ func main(){
 	}
 
 	router := gin.Default()
+	router.Use(cors.Default())
+	router.ForwardedByClientIP = true
+	router.SetTrustedProxies([]string{os.Getenv("PROXY")})
 	routes.SetUpRoutes(router)
 
 	router.Run("localhost:" + port)
