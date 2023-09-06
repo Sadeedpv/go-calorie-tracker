@@ -14,6 +14,7 @@ import (
 
 func main(){
 	godotenv.Load()
+	gin.SetMode(gin.ReleaseMode)
 	if err := utils.InitializeDatabase(); err != nil{
 		log.Fatal("Failed to Connect to DB")
 	}
@@ -29,8 +30,8 @@ func main(){
 	router.Use(gin.Logger())
 	router.Use(gin.Recovery())
 
-	router.ForwardedByClientIP = true
-	router.SetTrustedProxies([]string{os.Getenv("PROXY")})
+	// router.ForwardedByClientIP = true
+	// router.SetTrustedProxies([]string{os.Getenv("PROXY")})
 	routes.SetUpRoutes(router)
 
 	router.Run("localhost:" + port)
