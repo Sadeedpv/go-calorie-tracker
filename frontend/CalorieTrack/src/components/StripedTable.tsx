@@ -1,27 +1,9 @@
 import Table from 'react-bootstrap/Table'
-import React from 'react'
+import { calorieData, totalCalories } from '../utils/type';
 
 
-type calorieData = {
-  id: number,
-  food: string,
-  calorie: number
-}[]
 
-type totalCalories = number
-
-function StripedTable() {
-  const [calorieData, setCalorieData] = React.useState<calorieData|null>();
-  const [totalCalories, settotalCalories] = React.useState<totalCalories|null>();
-  React.useEffect(() => {
-    fetch(`${import.meta.env.VITE_PORT}/calories`)
-      .then((res) => res.json())
-      .then((data) => setCalorieData(data));
-    fetch(`${import.meta.env.VITE_PORT}/totalcalories`)
-      .then((res) => res.json())
-      .then((data) => settotalCalories(data.TotalCalories))
-    
-  }, [])
+function StripedTable({calorieData, totalCalories}:{calorieData:calorieData,totalCalories:totalCalories}) :JSX.Element{
   return (
     <Table striped bordered hover>
       <thead>

@@ -4,6 +4,10 @@
   box-sizing: border-box;
 }
 
+body{
+  background-color: #d5d3d3 !important;
+}
+
 .container{
   display: flex;
   align-items: center;
@@ -11,8 +15,22 @@
   margin-top: 40px;
   padding-left: 40px;
   padding-right: 40px;
+  flex-direction: column;
 }
+
+.buttonContainer{
+  display: flex;
+  align-items: flex-start;
+  width: 100%;
+}
+
 
 .endRow{
   text-align: center;
+}
+
+.form-group{
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
