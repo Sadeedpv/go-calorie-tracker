@@ -19,7 +19,9 @@ function StripedTable({ calorieData, totalCalories }: { calorieData: calorieData
   const handleShow = () => setShow(true);
   const handleClose = () => setShow(false);
 
-  const handleUpdate = (id: number) => {
+  const handleUpdate = (id: number, e: React.FormEvent) => {
+    e.preventDefault()
+    setShow(false)
     fetch(`${import.meta.env.VITE_PORT}/calories/${id}`,
     {
       method: 'PUT',
@@ -50,7 +52,6 @@ function StripedTable({ calorieData, totalCalories }: { calorieData: calorieData
     <Table striped bordered hover>
       <thead>
         <tr>
-          <th>ID</th>
           <th>FOOD</th>
           <th>CALORIES</th>
           <th colSpan={2} className='endRow'>Make Changes</th>
@@ -61,7 +62,6 @@ function StripedTable({ calorieData, totalCalories }: { calorieData: calorieData
           calorieData?.map((data, index) => {
             return (
               <tr key={index}>
-                <td>{data.id}</td>
                 <td>{data.food}</td>
                 <td>{data.calorie}</td>
                 <td>
@@ -85,8 +85,8 @@ function StripedTable({ calorieData, totalCalories }: { calorieData: calorieData
                   <Modal.Header closeButton>
                     <Modal.Title>Update today's diet</Modal.Title>
                   </Modal.Header>
-                  <form onSubmit={() => {
-                    handleUpdate(data.id)
+                  <form onSubmit={(e:React.FormEvent) => {
+                    handleUpdate(data.id, e)
                   }}>
                     <Modal.Body>
                       <div className="form-group">

@@ -1,12 +1,12 @@
 package controllers
 
 import (
+	"sync"
+
 	"github.com/Sadeedpv/go-calorie-tracker/models"
 	"github.com/Sadeedpv/go-calorie-tracker/utils"
 	"github.com/gin-gonic/gin"
 )
-
-
 
 /*
 	v1/calories
@@ -24,13 +24,33 @@ func GetAllCalories(r *gin.Context) {
 	}
 	defer rows.Close()
 	var calories []models.Calories
+
+	// Create a channel to recieve calorie data
+	calorieChan := make(chan models.Calories)
+
+	var wg sync.WaitGroup
 	for rows.Next(){
 		var calorie models.Calories
 		err := rows.Scan(&calorie.ID, &calorie.Food, &calorie.Calorie)
 		if err != nil{
 			utils.RespondWithError(r, err, "Internal Server Error")
 		}
-		calories = append(calories, calorie)
+		wg.Add(1)
+		go func(c models.Calories){
+			defer wg.Done()
+			// Send data to the channel
+			calorieChan <- c
+		}(calorie)
+	}
+
+	// Close the channel when all goroutines are done
+	go func(){
+		wg.Wait()
+		close(calorieChan)
+	}()
+
+	for c := range calorieChan{
+		calories = append(calories, c)
 	}
 	if len(calories) == 0{
 		utils.RespondWithJSON(r, []models.Calories{})
