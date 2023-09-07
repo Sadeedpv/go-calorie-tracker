@@ -22,6 +22,7 @@ function App():JSX.Element{
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
+    setShow(false)
     if (food && calorie) {
       // POST the data
       fetch(`${import.meta.env.VITE_PORT}/calories`, {
@@ -34,9 +35,20 @@ function App():JSX.Element{
           calorie:calorie
         })
       })
-        .then(res => res.json())
+      .then(res => res.json())
       .then(data => console.log(data))
     }
+  }
+
+  const handleDelete = () => {
+    fetch(`${import.meta.env.VITE_PORT}/calories`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    .then(res => res.json())
+    .then(data => console.log(data))
   }
 
   React.useEffect(() => {
@@ -61,50 +73,55 @@ function App():JSX.Element{
       {calorieData && totalCalories ? (
         <StripedTable calorieData={calorieData} totalCalories={totalCalories} />
       ) : (
-        <>Loading...</>
+        <p className="loading">Nothing here, Add items 👇👇</p>
       )}
+
       <div className="buttonContainer">
         <Button variant="primary" onClick={handleShow}>
           Insert here
-        </Button>{" "}
-        <Modal show={show} onHide={handleClose} animation={false}>
-          <Modal.Header closeButton>
-            <Modal.Title>Add today's diet</Modal.Title>
-          </Modal.Header>
-          <form onSubmit={handleSubmit}>
-          <Modal.Body>
-              <div className="form-group">
-                <label htmlFor="food">Food</label>
-                <input
-                  type="text"
-                  className="form-control" 
-                  id="food"
-                  placeholder="Enter food"
-                  onChange={(e:React.ChangeEvent<HTMLInputElement>) => {
-                    setFood(e.target.value)
-                  }}
-                />
-                <label htmlFor="calorie">Calorie</label>
-                <input
-                  type="number"
-                  min='0'
-                  className="form-control" 
-                  id="calorie"
-                  placeholder="Enter Calorie"
-                  onChange={(e:React.ChangeEvent<HTMLInputElement>) => {
-                    setCalorie(parseInt(e.target.value))
-                  }}
-                />
-              </div>
-          </Modal.Body>
-          <Modal.Footer>
-            <Button variant="primary"  type="submit">
-              Save Changes
-            </Button>
-          </Modal.Footer>
-          </form>
-        </Modal>
+        </Button>
+        <Button variant="primary" onClick={handleDelete}>
+          Remove All
+        </Button>
       </div>
+
+      <Modal show={show} onHide={handleClose} animation={false}>
+        <Modal.Header closeButton>
+          <Modal.Title>Add today's diet</Modal.Title>
+        </Modal.Header>
+        <form onSubmit={handleSubmit}>
+        <Modal.Body>
+            <div className="form-group">
+              <label htmlFor="food">Food</label>
+              <input
+                type="text"
+                className="form-control" 
+                id="food"
+                placeholder="Enter food"
+                onChange={(e:React.ChangeEvent<HTMLInputElement>) => {
+                  setFood(e.target.value)
+                }}
+              />
+              <label htmlFor="calorie">Calorie</label>
+              <input
+                type="number"
+                min='0'
+                className="form-control" 
+                id="calorie"
+                placeholder="Enter Calorie"
+                onChange={(e:React.ChangeEvent<HTMLInputElement>) => {
+                  setCalorie(parseInt(e.target.value))
+                }}
+              />
+            </div>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="primary"  type="submit">
+            Save Changes
+          </Button>
+        </Modal.Footer>
+        </form>
+      </Modal>
     </div>
   );
 }
