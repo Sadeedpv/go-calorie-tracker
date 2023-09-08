@@ -1,9 +1,9 @@
 import { create } from "zustand"
-import { calorieData } from "./type"
+import { calorieData, totalCalories } from "./type"
 
 interface calorieState{
-    calorieData: calorieData[],
-    totalCalories: number,
+    calorieData: calorieData,
+    totalCalories: totalCalories,
     fetchCalorieData: () => void,
     fetchTotalCalories: () => void
 }
@@ -26,7 +26,7 @@ export const useCalorieStore = create<calorieState>()((set) => ({
         })
     },
     fetchTotalCalories: () => {
-        fetch(`${import.meta.env.VITE_PORT}.totalcalories`,
+        fetch(`${import.meta.env.VITE_PORT}/totalcalories`,
             {
                 method: "GET",
                 headers: {
