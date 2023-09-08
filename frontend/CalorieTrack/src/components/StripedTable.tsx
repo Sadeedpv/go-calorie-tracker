@@ -1,12 +1,13 @@
 import Table from 'react-bootstrap/Table'
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal'
-import { calorieData, totalCalories } from '../utils/type';
 import React from 'react'
+import { useCalorieStore } from '../utils/useStore';
 
 
 
-function StripedTable({ calorieData, totalCalories }: { calorieData: calorieData, totalCalories: totalCalories }): JSX.Element{
+function StripedTable(): JSX.Element{
+  const {calorieData, totalCalories, fetchCalorieData, fetchTotalCalories} = useCalorieStore()
   const [food, setFood] = React.useState<string | null>();
   const [calorie, setCalorie] = React.useState<number | null>();
 
@@ -34,7 +35,10 @@ function StripedTable({ calorieData, totalCalories }: { calorieData: calorieData
       })
       })
       .then(res => res.json())
-      .then(data => console.log(data))
+      .then(() => {
+        fetchCalorieData()
+        fetchTotalCalories()
+      })
   }
   
   const handleDelete = (id: number) => {
@@ -46,7 +50,10 @@ function StripedTable({ calorieData, totalCalories }: { calorieData: calorieData
         }
       })
       .then(res => res.json())
-      .then(data => console.log(data))
+      .then(() => {
+        fetchCalorieData()
+        fetchTotalCalories()
+      })
   }
   return (
     <Table striped bordered hover>
@@ -95,7 +102,7 @@ function StripedTable({ calorieData, totalCalories }: { calorieData: calorieData
                           type="text"
                           className="form-control"
                           id="food"
-                          placeholder="Enter food"
+                          placeholder={data.food}
                           onChange={(
                             e: React.ChangeEvent<HTMLInputElement>
                           ) => {
@@ -108,7 +115,7 @@ function StripedTable({ calorieData, totalCalories }: { calorieData: calorieData
                           min="0"
                           className="form-control"
                           id="calorie"
-                          placeholder="Enter Calorie"
+                          placeholder={(data.calorie).toString()}
                           onChange={(
                             e: React.ChangeEvent<HTMLInputElement>
                           ) => {

@@ -110,6 +110,16 @@ func AddCalories(r *gin.Context) {
 
 func DeleteCalories(r *gin.Context) {
 	DB := utils.Db
+	var totalRows int
+	err := DB.QueryRow("SELECT COUNT(*) FROM public.calories").Scan(&totalRows)
+	if err != nil{
+		utils.RespondWithError(r, err, "Internal Server Error")
+		return
+	}
+	if totalRows == 0{
+		utils.RespondWithJSON(r, gin.H{"message":"Database is already empty!"})
+		return
+	}
 	row, err := DB.Exec("DELETE FROM public.calories")
 	if err != nil{
 		utils.RespondWithError(r, err, "Internal Server Error")
