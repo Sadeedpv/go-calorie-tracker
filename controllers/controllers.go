@@ -73,6 +73,10 @@ func AddCalories(r *gin.Context) {
 		utils.RespondWithError(r, err, "Something wrong with the sent data format")
 		return
 	}
+	if calorie.Food == "" || calorie.Calorie == 0{
+		utils.RespondWithJSON(r, gin.H{"message":"Food and Calorie fields are required"})
+		return
+	}
 	DB := utils.Db
 	if calorie.ID == nil{
 		row,err := DB.Exec("INSERT INTO public.calories(food, calorie) VALUES ($1, $2)", calorie.Food, calorie.Calorie)
@@ -167,6 +171,10 @@ func UpdateCalories(r *gin.Context) {
 	var calorie models.Calories
 	if err := r.ShouldBindJSON(&calorie); err != nil{
 		utils.RespondWithError(r, err, "Something wrong with the sent data format")
+		return
+	}
+	if calorie.Food == "" || calorie.Calorie == 0{
+		utils.RespondWithJSON(r, gin.H{"message":"Food and Calorie fields are required"})
 		return
 	}
 	row, err := DB.Exec("UPDATE public.calories SET food=$1, calorie=$2 WHERE id=$3", calorie.Food, calorie.Calorie, id)
