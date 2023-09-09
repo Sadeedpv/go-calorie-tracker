@@ -9,7 +9,7 @@ import { useCalorieStore } from '../utils/useStore';
 function StripedTable(): JSX.Element{
   const {calorieData, totalCalories, fetchCalorieData, fetchTotalCalories} = useCalorieStore()
   const [food, setFood] = React.useState<string | null>('');
-  const [calorie, setCalorie] = React.useState<number | null>(null);
+  const [calorie, setCalorie] = React.useState<number | null>();
 
   // React Modal
 
@@ -23,7 +23,7 @@ function StripedTable(): JSX.Element{
   const handleUpdate = (id: number, e: React.FormEvent) => {
     e.preventDefault()
     setShow(false)
-    if (food !== '' && calorie !== null) {
+    if (food !== '' && typeof(calorie) === "number") {
       fetch(`${import.meta.env.VITE_PORT}/calories/${id}`,
       {
         method: 'PUT',
@@ -130,7 +130,7 @@ function StripedTable(): JSX.Element{
                     </Modal.Body>
                     <Modal.Footer>
                       <Button variant="primary" type="submit"
-                        disabled={food === '' || calorie === null}
+                        disabled={food === '' || typeof(calorie) !== "number"}
                       >
                         Save Changes
                       </Button>

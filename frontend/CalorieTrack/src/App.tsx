@@ -24,7 +24,7 @@ function App(): JSX.Element {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setShow(false);
-    if (food !== '' && calorie !== null) {
+    if (food !== '' && typeof(calorie) === "number") {
       // POST the data
       fetch(`${import.meta.env.VITE_PORT}/calories`, {
         method: "POST",
@@ -145,7 +145,7 @@ function App(): JSX.Element {
           </Modal.Body>
           <Modal.Footer>
             <Button variant="primary" type="submit"
-              disabled={food === '' || calorie === null}
+              disabled={food === '' || typeof(calorie) !== "number"}
             >
               Save Changes
             </Button>
