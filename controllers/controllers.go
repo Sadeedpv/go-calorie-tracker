@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"net/http"
 	"sync"
 
 	"github.com/Sadeedpv/go-calorie-tracker/models"
@@ -53,9 +54,9 @@ func GetAllCalories(r *gin.Context) {
 		calories = append(calories, c)
 	}
 	if len(calories) == 0{
-		utils.RespondWithJSON(r, []models.Calories{})
+		utils.RespondWithJSON(r, http.StatusOK,[]models.Calories{})
 	}else{
-		utils.RespondWithJSON(r, calories)
+		utils.RespondWithJSON(r, http.StatusOK,calories)
 	}
 }
 
@@ -74,7 +75,7 @@ func AddCalories(r *gin.Context) {
 		return
 	}
 	if calorie.Food == "" || calorie.Calorie == 0{
-		utils.RespondWithJSON(r, gin.H{"message":"Food and Calorie fields are required"})
+		utils.RespondWithJSON(r, http.StatusBadRequest, gin.H{"message":"Food and Calorie fields are required"})
 		return
 	}
 	DB := utils.Db
@@ -101,7 +102,7 @@ func AddCalories(r *gin.Context) {
 			return
 		}
 	}
-	utils.RespondWithJSON(r, gin.H{"message":"Data Added Successfully"})
+	utils.RespondWithJSON(r,http.StatusOK, gin.H{"message":"Data Added Successfully"})
 }
 
 
@@ -121,7 +122,7 @@ func DeleteCalories(r *gin.Context) {
 		return
 	}
 	if totalRows == 0{
-		utils.RespondWithJSON(r, gin.H{"message":"Database is already empty!"})
+		utils.RespondWithJSON(r, http.StatusNoContent,gin.H{"message":"Database is already empty!"})
 		return
 	}
 	row, err := DB.Exec("DELETE FROM public.calories")
@@ -134,7 +135,7 @@ func DeleteCalories(r *gin.Context) {
 		utils.RespondWithError(r,err, "Failed to Execute DB Query")
 		return
 	}
-	utils.RespondWithJSON(r, gin.H{"message":"Database deleted successfully!"})
+	utils.RespondWithJSON(r, http.StatusOK, gin.H{"message":"Database deleted successfully!"})
 }
 
 
@@ -155,7 +156,7 @@ func GetCaloriesById(r *gin.Context) {
 		utils.RespondWithError(r, err, "Internal Server Error")
 		return
 	}
-	utils.RespondWithJSON(r, calorie)
+	utils.RespondWithJSON(r, http.StatusOK, calorie)
 }
 
 /*
@@ -174,7 +175,7 @@ func UpdateCalories(r *gin.Context) {
 		return
 	}
 	if calorie.Food == "" || calorie.Calorie == 0{
-		utils.RespondWithJSON(r, gin.H{"message":"Food and Calorie fields are required"})
+		utils.RespondWithJSON(r, http.StatusBadRequest,gin.H{"message":"Food and Calorie fields are required"})
 		return
 	}
 	row, err := DB.Exec("UPDATE public.calories SET food=$1, calorie=$2 WHERE id=$3", calorie.Food, calorie.Calorie, id)
@@ -188,7 +189,7 @@ func UpdateCalories(r *gin.Context) {
 		return
 	}
 
-	utils.RespondWithJSON(r, gin.H{"message": "Data Updated successfully!"})
+	utils.RespondWithJSON(r, http.StatusOK,gin.H{"message": "Data Updated successfully!"})
 }
 
 /*
@@ -205,7 +206,7 @@ func GetTotalCalories(r *gin.Context) {
 		utils.RespondWithError(r, err, "Internal Server Error")
 		return
 	}
-	utils.RespondWithJSON(r, gin.H{"TotalCalories": sum})
+	utils.RespondWithJSON(r, http.StatusOK, gin.H{"TotalCalories": sum})
 }
 
 
@@ -228,5 +229,5 @@ func DeleteCaloriesById(r *gin.Context){
 		utils.RespondWithError(r,err, "Failed to Execute DB Query")
 		return
 	}
-	utils.RespondWithJSON(r, gin.H{"message":"Row Deleted Successfully!"})
+	utils.RespondWithJSON(r, http.StatusOK, gin.H{"message":"Row Deleted Successfully!"})
 }

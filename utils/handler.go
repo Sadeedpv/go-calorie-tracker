@@ -8,7 +8,7 @@ import (
 )
 
 
-func RespondWithJSON(r *gin.Context, p interface{}){
+func RespondWithJSON(r *gin.Context, statusCode int, p interface{}){
 	// Convert the 'calories' slice to JSON
 	caloriesJSON, err := json.Marshal(p)
 	if err != nil {
@@ -18,7 +18,7 @@ func RespondWithJSON(r *gin.Context, p interface{}){
 	}
 
 	// Send the JSON response
-	r.Data(http.StatusOK, "application/json", caloriesJSON)
+	r.Data(statusCode, "application/json", caloriesJSON)
 }
 
 func RespondWithError(r *gin.Context, err error, msg string){
