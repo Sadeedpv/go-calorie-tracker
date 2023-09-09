@@ -8,8 +8,8 @@ function App(): JSX.Element {
   const { calorieData, totalCalories, fetchCalorieData, fetchTotalCalories } =
     useCalorieStore();
 
-  const [food, setFood] = React.useState<string | null>();
-  const [info, setInfo] = React.useState<number | null>();
+  const [food, setFood] = React.useState<string | null>('');
+  const [info, setInfo] = React.useState<number | null>(null);
   const [calorie, setCalorie] = React.useState<number | null>();
 
   // React Modal
@@ -24,7 +24,7 @@ function App(): JSX.Element {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setShow(false);
-    if (food && calorie) {
+    if (food !== '' && calorie !== null) {
       // POST the data
       fetch(`${import.meta.env.VITE_PORT}/calories`, {
         method: "POST",
@@ -93,8 +93,16 @@ function App(): JSX.Element {
                 className="form-control"
                 id="food"
                 placeholder="Enter food"
+                value={food?.toString()}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                  setInfo(null)
                   setFood(e.target.value);
+                }}
+              />
+              <Button
+                variant="info"
+                type="button"
+                onClick={() => {
                   try {
                     fetch(
                       `https://api.calorieninjas.com/v1/nutrition?query=${food}`,
@@ -107,22 +115,27 @@ function App(): JSX.Element {
                     )
                       .then((res) => res.json())
                       .then((data) => setInfo(data?.items[0]?.calories));
-                  }
-                  catch (err) {
+                  } catch (err) {
                     console.log(err);
                   }
                 }}
-              />
-              {
-                info || food ?
-                <p>{food} has {info} calories</p> : <></>
-              }
+              >
+                Get Help
+              </Button>
+              {info? (
+                <p>
+                  {food} has {info} calories
+                </p>
+              ) : (
+                <></>
+              )}
               <label htmlFor="calorie">Calorie</label>
               <input
                 type="number"
                 min="0"
                 className="form-control"
                 id="calorie"
+                value={calorie?.toString()}
                 placeholder="Enter Calorie"
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                   setCalorie(parseInt(e.target.value));
@@ -131,7 +144,9 @@ function App(): JSX.Element {
             </div>
           </Modal.Body>
           <Modal.Footer>
-            <Button variant="primary" type="submit">
+            <Button variant="primary" type="submit"
+              disabled={food === '' || calorie === null}
+            >
               Save Changes
             </Button>
           </Modal.Footer>

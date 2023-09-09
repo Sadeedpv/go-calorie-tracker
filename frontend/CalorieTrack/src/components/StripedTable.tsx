@@ -8,8 +8,8 @@ import { useCalorieStore } from '../utils/useStore';
 
 function StripedTable(): JSX.Element{
   const {calorieData, totalCalories, fetchCalorieData, fetchTotalCalories} = useCalorieStore()
-  const [food, setFood] = React.useState<string | null>();
-  const [calorie, setCalorie] = React.useState<number | null>();
+  const [food, setFood] = React.useState<string | null>('');
+  const [calorie, setCalorie] = React.useState<number | null>(null);
 
   // React Modal
 
@@ -23,22 +23,24 @@ function StripedTable(): JSX.Element{
   const handleUpdate = (id: number, e: React.FormEvent) => {
     e.preventDefault()
     setShow(false)
-    fetch(`${import.meta.env.VITE_PORT}/calories/${id}`,
-    {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        food: food,
-        calorie:calorie
-      })
-      })
-      .then(res => res.json())
-      .then(() => {
-        fetchCalorieData()
-        fetchTotalCalories()
-      })
+    if (food !== '' && calorie !== null) {
+      fetch(`${import.meta.env.VITE_PORT}/calories/${id}`,
+      {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          food: food,
+          calorie:calorie
+        })
+        })
+        .then(res => res.json())
+        .then(() => {
+          fetchCalorieData()
+          fetchTotalCalories()
+        })
+    }
   }
   
   const handleDelete = (id: number) => {
@@ -103,6 +105,7 @@ function StripedTable(): JSX.Element{
                           className="form-control"
                           id="food"
                           placeholder={data.food}
+                          value={food?.toString()}
                           onChange={(
                             e: React.ChangeEvent<HTMLInputElement>
                           ) => {
@@ -116,6 +119,7 @@ function StripedTable(): JSX.Element{
                           className="form-control"
                           id="calorie"
                           placeholder={(data.calorie).toString()}
+                          value={calorie?.toString()}
                           onChange={(
                             e: React.ChangeEvent<HTMLInputElement>
                           ) => {
@@ -125,7 +129,9 @@ function StripedTable(): JSX.Element{
                       </div>
                     </Modal.Body>
                     <Modal.Footer>
-                      <Button variant="primary" type="submit">
+                      <Button variant="primary" type="submit"
+                        disabled={food === '' || calorie === null}
+                      >
                         Save Changes
                       </Button>
                     </Modal.Footer>
