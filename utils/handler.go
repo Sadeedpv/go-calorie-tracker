@@ -21,8 +21,8 @@ func RespondWithJSON(r *gin.Context, statusCode int, p interface{}){
 	r.Data(statusCode, "application/json", caloriesJSON)
 }
 
-func RespondWithError(r *gin.Context, err error, msg string){
+func RespondWithError(r *gin.Context, err error, statusCode int, msg string){
 	fmt.Print("Error Executing query: ", err)
-	r.JSON(http.StatusInternalServerError, gin.H{"error": msg})
+	r.JSON(statusCode, gin.H{"error": msg})
 }
 

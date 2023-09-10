@@ -84,7 +84,7 @@ function App(): JSX.Element {
         <Modal.Header closeButton>
           <Modal.Title>Add today's diet</Modal.Title>
         </Modal.Header>
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} autoComplete="off">
           <Modal.Body>
             <div className="form-group">
               <label htmlFor="food">Food</label>
@@ -93,6 +93,7 @@ function App(): JSX.Element {
                 className="form-control"
                 id="food"
                 placeholder="Enter food"
+                autoComplete="off"
                 value={food?.toString()}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                   setInfo(null)
@@ -137,6 +138,7 @@ function App(): JSX.Element {
                 id="calorie"
                 value={calorie?.toString()}
                 placeholder="Enter Calorie"
+                autoComplete="off"
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                   setCalorie(parseInt(e.target.value));
                 }}

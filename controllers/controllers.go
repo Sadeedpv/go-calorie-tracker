@@ -20,7 +20,7 @@ func GetAllCalories(r *gin.Context) {
 	DB := utils.Db
 	rows, err := DB.Query("SELECT * FROM public.calories;")
 	if err != nil {
-		utils.RespondWithError(r, err, "Internal Server Error")
+		utils.RespondWithError(r, err, http.StatusInternalServerError,"Internal Server Error")
 		return
 	}
 	defer rows.Close()
@@ -34,7 +34,7 @@ func GetAllCalories(r *gin.Context) {
 		var calorie models.Calories
 		err := rows.Scan(&calorie.ID, &calorie.Food, &calorie.Calorie)
 		if err != nil{
-			utils.RespondWithError(r, err, "Internal Server Error")
+			utils.RespondWithError(r, err, http.StatusInternalServerError,"Internal Server Error")
 		}
 		wg.Add(1)
 		go func(c models.Calories){
@@ -71,7 +71,7 @@ func GetAllCalories(r *gin.Context) {
 func AddCalories(r *gin.Context) {
 	var calorie models.Calories
 	if err := r.ShouldBindJSON(&calorie); err != nil{
-		utils.RespondWithError(r, err, "Something wrong with the sent data format")
+		utils.RespondWithError(r, err, http.StatusBadRequest,"Something wrong with the sent data format")
 		return
 	}
 	if calorie.Food == "" || calorie.Calorie == 0{
@@ -82,23 +82,23 @@ func AddCalories(r *gin.Context) {
 	if calorie.ID == nil{
 		row,err := DB.Exec("INSERT INTO public.calories(food, calorie) VALUES ($1, $2)", calorie.Food, calorie.Calorie)
 		if err != nil{
-			utils.RespondWithError(r, err, "Failed to add the data, check the input values")
+			utils.RespondWithError(r, err, http.StatusBadRequest,"Failed to add the data, check the input values")
 			return
 		}
 		// Check If any rows affected 
 		if result,_ := row.RowsAffected(); result < 1{
-			utils.RespondWithError(r, err,"Failed to Execute DB Query")
+			utils.RespondWithError(r, err, http.StatusInternalServerError, "Failed to Execute DB Query")
 			return
 		}
 	}else{
 		row,err := DB.Exec("INSERT INTO public.calories(id, food, calorie) VALUES ($1, $2, $3)", calorie.ID, calorie.Food, calorie.Calorie)
 		if err != nil{
-			utils.RespondWithError(r, err, "Failed to add the data, check the input values")
+			utils.RespondWithError(r, err, http.StatusBadRequest, "Failed to add the data, check the input values")
 			return
 		}
 		// Check If any rows affected 
 		if result,_ := row.RowsAffected(); result < 1{
-			utils.RespondWithError(r,err, "Failed to Execute DB Query")
+			utils.RespondWithError(r, err, http.StatusInternalServerError, "Failed to Execute DB Query")
 			return
 		}
 	}
@@ -118,7 +118,7 @@ func DeleteCalories(r *gin.Context) {
 	var totalRows int
 	err := DB.QueryRow("SELECT COUNT(*) FROM public.calories").Scan(&totalRows)
 	if err != nil{
-		utils.RespondWithError(r, err, "Internal Server Error")
+		utils.RespondWithError(r, err, http.StatusInternalServerError,"Internal Server Error")
 		return
 	}
 	if totalRows == 0{
@@ -127,12 +127,12 @@ func DeleteCalories(r *gin.Context) {
 	}
 	row, err := DB.Exec("DELETE FROM public.calories")
 	if err != nil{
-		utils.RespondWithError(r, err, "Internal Server Error")
+		utils.RespondWithError(r, err, http.StatusInternalServerError, "Internal Server Error")
 		return
 	}
 	// Check if any rows affected
 	result,_ := row.RowsAffected(); if result < 1{
-		utils.RespondWithError(r,err, "Failed to Execute DB Query")
+		utils.RespondWithError(r,err, http.StatusInternalServerError,"Failed to Execute DB Query")
 		return
 	}
 	utils.RespondWithJSON(r, http.StatusOK, gin.H{"message":"Database deleted successfully!"})
@@ -153,7 +153,7 @@ func GetCaloriesById(r *gin.Context) {
 	var calorie models.Calories
 	err := row.Scan(&calorie.ID, &calorie.Food, &calorie.Calorie)
 	if err != nil{
-		utils.RespondWithError(r, err, "Internal Server Error")
+		utils.RespondWithError(r, err, http.StatusInternalServerError, "Internal Server Error")
 		return
 	}
 	utils.RespondWithJSON(r, http.StatusOK, calorie)
@@ -171,7 +171,7 @@ func UpdateCalories(r *gin.Context) {
 	id := r.Param("id")
 	var calorie models.Calories
 	if err := r.ShouldBindJSON(&calorie); err != nil{
-		utils.RespondWithError(r, err, "Something wrong with the sent data format")
+		utils.RespondWithError(r, err, http.StatusBadRequest, "Something wrong with the sent data format")
 		return
 	}
 	if calorie.Food == "" || calorie.Calorie == 0{
@@ -180,12 +180,12 @@ func UpdateCalories(r *gin.Context) {
 	}
 	row, err := DB.Exec("UPDATE public.calories SET food=$1, calorie=$2 WHERE id=$3", calorie.Food, calorie.Calorie, id)
 	if err != nil{
-		utils.RespondWithError(r, err, "Failed to add the data, check the input values")
+		utils.RespondWithError(r, err, http.StatusBadRequest, "Failed to add the data, check the input values")
 		return
 	}
 	// Check if any rows affected
 	result,_ := row.RowsAffected(); if result < 1{
-		utils.RespondWithError(r,err, "Failed to Execute DB Query")
+		utils.RespondWithError(r, err, http.StatusInternalServerError, "Failed to Execute DB Query")
 		return
 	}
 
@@ -203,7 +203,7 @@ func GetTotalCalories(r *gin.Context) {
 	var sum int
 	err := row.Scan(&sum)
 	if err != nil{
-		utils.RespondWithError(r, err, "Internal Server Error")
+		utils.RespondWithError(r, err, http.StatusInternalServerError, "Internal Server Error")
 		return
 	}
 	utils.RespondWithJSON(r, http.StatusOK, gin.H{"TotalCalories": sum})
@@ -221,12 +221,12 @@ func DeleteCaloriesById(r *gin.Context){
 	id := r.Param("id")
 	row,err := DB.Exec("DELETE FROM public.calories WHERE ID=$1", id)
 	if err != nil{
-		utils.RespondWithError(r, err, "Internal Server Error")
+		utils.RespondWithError(r, err, http.StatusInternalServerError, "Internal Server Error")
 		return
 	}
 	// Check if any rows affected
 	result,_ := row.RowsAffected(); if result < 1{
-		utils.RespondWithError(r,err, "Failed to Execute DB Query")
+		utils.RespondWithError(r,err, http.StatusInternalServerError, "Failed to Execute DB Query")
 		return
 	}
 	utils.RespondWithJSON(r, http.StatusOK, gin.H{"message":"Row Deleted Successfully!"})
