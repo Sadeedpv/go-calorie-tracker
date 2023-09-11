@@ -13,7 +13,10 @@ import (
 
 
 func main(){
-	godotenv.Load()
+	err := godotenv.Load()
+	if err != nil{
+		log.Fatal("Error loading .env file")
+	}
 	gin.SetMode(gin.ReleaseMode)
 	if err := utils.InitializeDatabase(); err != nil{
 		log.Fatal("Failed to Connect to DB")

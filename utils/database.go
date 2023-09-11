@@ -13,7 +13,10 @@ import (
 var Db *sql.DB
 
 func InitializeDatabase() error {
-	godotenv.Load()
+	err_env := godotenv.Load()
+	if err_env != nil{
+		log.Print("Error loading .env file")
+	}
 	db_url := os.Getenv("DB_URL")
 	if db_url == ""{
 		return errors.New("Incorrect Database URL")
