@@ -1,2 +1,4 @@
 .env
 *.exe
+docker-compose.yml
+vendor/
