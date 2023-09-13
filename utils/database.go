@@ -3,6 +3,7 @@ package utils
 import (
 	"database/sql"
 	"errors"
+	"fmt"
 	"log"
 	"os"
 
@@ -15,7 +16,7 @@ var Db *sql.DB
 func InitializeDatabase() error {
 	err_env := godotenv.Load()
 	if err_env != nil{
-		log.Print("Error loading .env file")
+		fmt.Print("Error loading .env file")
 	}
 	db_url := os.Getenv("DB_URL")
 	if db_url == ""{

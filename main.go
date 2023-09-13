@@ -1,21 +1,22 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"os"
 
 	"github.com/Sadeedpv/go-calorie-tracker/routes"
 	"github.com/Sadeedpv/go-calorie-tracker/utils"
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
-	"github.com/gin-contrib/cors"
 )
 
 
 func main(){
 	err := godotenv.Load()
 	if err != nil{
-		log.Fatal("Error loading .env file")
+		fmt.Print("Error loading .env file")
 	}
 	gin.SetMode(gin.ReleaseMode)
 	if err := utils.InitializeDatabase(); err != nil{

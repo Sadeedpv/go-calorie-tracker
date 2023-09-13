@@ -2,8 +2,9 @@ package utils
 
 import (
 	"encoding/json"
-	"fmt"
+	"log"
 	"net/http"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -12,7 +13,7 @@ func RespondWithJSON(r *gin.Context, statusCode int, p interface{}){
 	// Convert the 'calories' slice to JSON
 	caloriesJSON, err := json.Marshal(p)
 	if err != nil {
-		fmt.Print("Error marshaling JSON:", err)
+		log.Print("Error marshaling JSON:", err)
 		r.JSON(http.StatusInternalServerError, gin.H{"error": "Internal Server Error"})
 		return
 	}
@@ -22,7 +23,7 @@ func RespondWithJSON(r *gin.Context, statusCode int, p interface{}){
 }
 
 func RespondWithError(r *gin.Context, err error, statusCode int, msg string){
-	fmt.Print("Error Executing query: ", err)
+	log.Print("Error Executing query: ", err)
 	r.JSON(statusCode, gin.H{"error": msg})
 }
 
