@@ -18,7 +18,7 @@ import (
 func GetAllCalories(r *gin.Context) {
 	// Fetching data from a table
 	DB := utils.Db
-	rows, err := DB.Query("SELECT * FROM public.calories;")
+	rows, err := DB.Query("SELECT * FROM calories;")
 	if err != nil {
 		utils.RespondWithError(r, err, http.StatusInternalServerError,"Internal Server Error")
 		return
@@ -80,7 +80,7 @@ func AddCalories(r *gin.Context) {
 	}
 	DB := utils.Db
 	if calorie.ID == nil{
-		row,err := DB.Exec("INSERT INTO public.calories(food, calorie) VALUES ($1, $2)", calorie.Food, calorie.Calorie)
+		row,err := DB.Exec("INSERT INTO calories(food, calorie) VALUES ($1, $2)", calorie.Food, calorie.Calorie)
 		if err != nil{
 			utils.RespondWithError(r, err, http.StatusBadRequest,"Failed to add the data, check the input values")
 			return
@@ -116,7 +116,7 @@ func AddCalories(r *gin.Context) {
 func DeleteCalories(r *gin.Context) {
 	DB := utils.Db
 	var totalRows int
-	err := DB.QueryRow("SELECT COUNT(*) FROM public.calories").Scan(&totalRows)
+	err := DB.QueryRow("SELECT COUNT(*) FROM calories").Scan(&totalRows)
 	if err != nil{
 		utils.RespondWithError(r, err, http.StatusInternalServerError,"Internal Server Error")
 		return
@@ -125,7 +125,7 @@ func DeleteCalories(r *gin.Context) {
 		utils.RespondWithJSON(r, http.StatusNoContent,gin.H{"message":"Database is already empty!"})
 		return
 	}
-	row, err := DB.Exec("DELETE FROM public.calories")
+	row, err := DB.Exec("DELETE FROM calories")
 	if err != nil{
 		utils.RespondWithError(r, err, http.StatusInternalServerError, "Internal Server Error")
 		return
@@ -149,7 +149,7 @@ func DeleteCalories(r *gin.Context) {
 func GetCaloriesById(r *gin.Context) {
 	DB := utils.Db
 	id := r.Param("id")
-	row:= DB.QueryRow("SELECT * FROM public.calories WHERE ID=$1;", id)
+	row:= DB.QueryRow("SELECT * FROM calories WHERE ID=$1;", id)
 	var calorie models.Calories
 	err := row.Scan(&calorie.ID, &calorie.Food, &calorie.Calorie)
 	if err != nil{
@@ -178,7 +178,7 @@ func UpdateCalories(r *gin.Context) {
 		utils.RespondWithJSON(r, http.StatusBadRequest,gin.H{"message":"Food and Calorie fields are required"})
 		return
 	}
-	row, err := DB.Exec("UPDATE public.calories SET food=$1, calorie=$2 WHERE id=$3", calorie.Food, calorie.Calorie, id)
+	row, err := DB.Exec("UPDATE calories SET food=$1, calorie=$2 WHERE id=$3", calorie.Food, calorie.Calorie, id)
 	if err != nil{
 		utils.RespondWithError(r, err, http.StatusBadRequest, "Failed to add the data, check the input values")
 		return
@@ -199,7 +199,7 @@ func UpdateCalories(r *gin.Context) {
 */
 func GetTotalCalories(r *gin.Context) {
 	DB := utils.Db
-	row := DB.QueryRow("SELECT COALESCE(SUM(calorie), 0) FROM public.calories;")
+	row := DB.QueryRow("SELECT COALESCE(SUM(calorie), 0) FROM calories;")
 	var sum int
 	err := row.Scan(&sum)
 	if err != nil{
@@ -219,7 +219,7 @@ func GetTotalCalories(r *gin.Context) {
 func DeleteCaloriesById(r *gin.Context){
 	DB := utils.Db
 	id := r.Param("id")
-	row,err := DB.Exec("DELETE FROM public.calories WHERE ID=$1", id)
+	row,err := DB.Exec("DELETE FROM calories WHERE ID=$1", id)
 	if err != nil{
 		utils.RespondWithError(r, err, http.StatusInternalServerError, "Internal Server Error")
 		return

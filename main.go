@@ -22,11 +22,11 @@ func main(){
 	gin.SetMode(gin.ReleaseMode)
 
 	// Set retry intervals
-	maxRetries := 20
-	retryInterval := 5 * time.Second
+	maxRetries := 100
+	retryInterval := 10 * time.Second
 	for i:=0;i<maxRetries;i++{
 		if err := utils.InitializeDatabase(); err != nil{
-			log.Fatal("Failed to Connect to DB: ", err)
+			log.Print("Failed to Connect to DB: ", err)
 			time.Sleep(retryInterval)
 		}
 		break
@@ -47,14 +47,13 @@ func main(){
 
 	// router.ForwardedByClientIP = true
 	// router.SetTrustedProxies([]string{os.Getenv("PROXY")})
-	router.GET("/v2", func(ctx *gin.Context) {
+
+	router.GET("/", func(ctx *gin.Context) {
 		ctx.JSON(200, gin.H{
 			"message": "Hello World",
 		})
 	})
 	routes.SetUpRoutes(router)
-
-	fmt.Print("We have initialized Routes!!")
 
 	runErr := router.Run("0.0.0.0:" + port)
 	if runErr != nil{
