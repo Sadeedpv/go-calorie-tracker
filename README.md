@@ -1,63 +1,66 @@
- # Calorie Tracker API 
+ # Go Calorie Tracker
 
-This is a simple calorie tracker API built using Gin framework in Go. The API allows users to track their daily calorie intake and provides a simple interface for users to interact with the data.
+This is a simple Go application that allows users to track their daily calorie intake. The application uses a PostgreSQL database to store the data. The application is built using the Gin framework.
 
 ## Prerequisites
 
-- Go 1.18 or later
-- PostgreSQL database
-- A text editor
-- Git
+* PostgreSQL database
+* Go 1.21 or later
+* Docker
 
-## Setup
+## Installation
 
 1. Clone the repository
 
-```sh
+```
 git clone https://github.com/Sadeedpv/go-calorie-tracker.git
-cd go-calorie-tracker
 ```
 
 2. Install dependencies
 
-```sh
-go mod tidy
+```
+go mod download
 ```
 
-3. Create a `.env` file in the project directory and add the environment variables
+3. Create a .env file and add your database credentials
 
-
-4. Create a PostgreSQL database and table
-
-```sql
-CREATE DATABASE calorie_tracker;
-
-\c calorie_tracker
-
-CREATE TABLE calories (
-  id SERIAL PRIMARY KEY,
-  food TEXT NOT NULL,
-  calorie INTEGER NOT NULL
-);
+```
+DB_URL=postgres://user:password@localhost:5432/calorie_tracker
 ```
 
-5. Run the application
+4. Run the application
 
-```sh
+```
 go run main.go
 ```
 
 ## Usage
 
-The API provides the following endpoints:
+The application exposes the following endpoints:
 
-- `/v1/calories`: Get all calories
-- `/v1/calories`: Add a calorie to the DB
-- `/v1/calories/:id`: Get a calorie by ID
-- `/v1/calories/:id`: Update a calorie by ID
-- `/v1/calories/:id`: Delete a calorie by ID
-- `/v1/totalcalories`: Get total calories consumed
+* `/v1/calories`: Get all calories
+* `/v1/calories`: Add a calorie
+* `/v1/calories`: Delete all calories
+* `/v1/calories/:id`: Get a calorie by ID
+* `/v1/calories/:id`: Update a calorie by ID
+* `/v1/totalcalories`: Get the total number of calories
+
+## Docker
+
+You can also run the application using Docker.
+
+1. Build the image
+
+```
+docker build -t go-calorie-tracker .
+```
+
+2. Run the container
+
+```
+docker run -p 8000:8000 go-calorie-tracker
+```
 
 ## Contributing
 
-Contributions are welcome! Please feel free to fork the repository and submit a pull request.
+Contributions are welcome! Please open a pull request if you have any suggestions or improvements.

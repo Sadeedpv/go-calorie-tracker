@@ -219,6 +219,16 @@ func GetTotalCalories(r *gin.Context) {
 func DeleteCaloriesById(r *gin.Context){
 	DB := utils.Db
 	id := r.Param("id")
+	var totalRows int
+	QueryErr := DB.QueryRow("SELECT COUNT(*) FROM calories WHERE ID=$1", id).Scan(&totalRows)
+	if QueryErr != nil{
+		utils.RespondWithError(r, QueryErr, http.StatusInternalServerError, "Internal Server Error")
+		return
+	}
+	if totalRows == 0{
+		utils.RespondWithJSON(r, http.StatusNoContent, gin.H{"message":"No rows found with the given ID"})
+		return
+	}
 	row,err := DB.Exec("DELETE FROM calories WHERE ID=$1", id)
 	if err != nil{
 		utils.RespondWithError(r, err, http.StatusInternalServerError, "Internal Server Error")
