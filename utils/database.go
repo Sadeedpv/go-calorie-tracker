@@ -30,7 +30,7 @@ func InitializeDatabase() error {
 
 	err = Db.Ping()
 	if err != nil{
-		panic(err)
+		return errors.New("Failed to Connect to DB!")
 	}
 	log.Print("Database Connected!!")
 	return nil
